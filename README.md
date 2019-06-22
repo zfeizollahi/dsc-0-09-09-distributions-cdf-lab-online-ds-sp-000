@@ -28,8 +28,13 @@ So given a list of all possible values of x, We can easily calculate the cdf for
 
 ```python
 def calculate_cdf(lst, X):
-    
-    pass
+    count = 0
+    for i in lst:
+        if i <= X:
+            count += 1
+        #print("X is: {}, i is {}, count-cdf: {}".format(X, i, count))
+    cdf = count / len(lst)
+    return round(cdf, 3)
 
 # test data
 test_lst = [1,2,3]
@@ -40,6 +45,13 @@ calculate_cdf(test_lst, test_X)
 # 0.667
 ```
 
+
+
+
+    0.667
+
+
+
 Let's now use above function to calculate a cdf for each value in a die roll with an intention of plotting it.
 
 Perform following steps in the cell below:
@@ -49,13 +61,21 @@ Perform following steps in the cell below:
 
 
 ```python
-die_lst = None
-die_cum = None
-
+die_lst = [1,2,3,4,5,6]
+die_cum = []
+for i in range(len(die_lst)):
+    die_cum.append(calculate_cdf(die_lst, die_lst[i]))
 die_cum
 
 # [0.167, 0.333, 0.5, 0.667, 0.833, 1.0]
 ```
+
+
+
+
+    [0.167, 0.333, 0.5, 0.667, 0.833, 1.0]
+
+
 
 > cdfs are implemented with two sorted lists: xs, which contains the values, and ps, which contains the cumulative probabilities for xs.
 
@@ -78,6 +98,18 @@ Following this, we now have a list of possible values, and a second list contain
 ![png](index_files/index_7_1.png)
 
 
+
+```python
+import matplotlib.pyplot as plt
+plt.style.use('ggplot')
+plt.stem(die_lst, die_cum, '-.', 'ro', 'g-')
+plt.show()
+```
+
+
+![png](index_files/index_8_0.png)
+
+
 ## Level Up (optional)
 
 cdfs (and pmfs) can be calculated using built in numpy and matplotlib methods. So we don't have create custom functions to calculate these. We can draw a histogram styled cdf as shown below using following methods. 
@@ -94,7 +126,45 @@ You would need to perform these steps
 ```
 
 
-![png](index_files/index_9_0.png)
+![png](index_files/index_10_0.png)
+
+
+
+```python
+import numpy as np
+```
+
+
+```python
+die_hist = np.histogram(die_lst,bins=6, range=(1,7), density=True)
+die_hist
+```
+
+
+
+
+    (array([0.16666667, 0.16666667, 0.16666667, 0.16666667, 0.16666667,
+            0.16666667]), array([1., 2., 3., 4., 5., 6., 7.]))
+
+
+
+
+```python
+plt.step(x=die_hist[1][0:6], y=np.cumsum(die_hist[0]))
+plt.title("Die Roll - Cumulative Distribuion Function")
+plt.xlabel("Die Values")
+plt.ylabel("Cum Sum Probability")
+```
+
+
+
+
+    Text(0, 0.5, 'Cum Sum Probability')
+
+
+
+
+![png](index_files/index_13_1.png)
 
 
 ## Summary 
